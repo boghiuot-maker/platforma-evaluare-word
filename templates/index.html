@@ -4,72 +4,47 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Platformă evaluare Word</title>
-  <style>
-    body{font-family:Arial,Helvetica,sans-serif;max-width:900px;margin:20px auto;padding:10px}
-    .card{border:1px solid #ddd;padding:16px;border-radius:8px;margin-bottom:12px}
-    input[type=file]{display:block;margin-top:8px}
-    .ok{color:green}.no{color:#b00}
-    table{border-collapse:collapse;width:100%}
-    th,td{border:1px solid #ddd;padding:8px;text-align:left}
-  </style>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-  <h1>Platformă evaluare Word - Practic</h1>
-  <div class="card">
-    <h3>Cerințe</h3>
-    <ul>
-      <li>Titlu setat ca Heading</li>
-      <li>Să conțină cel puțin o imagine</li>
-      <li>Să conțină un tabel</li>
-      <li>Antet și subsol</li>
-      <li>Liste (bullet/number)</li>
-      <li>Minim 100 cuvinte</li>
-    </ul>
-    <a href="/download-template">Descarcă fișierul suport (.docx)</a>
-  </div>
+  <div class="container">
+    <header><h1>Platformă evaluare Word - Practic</h1></header>
+    <main>
+      <section class="card">
+        <h3>Cerințe</h3>
+        <ul>
+          <li>Titlu setat ca Heading</li>
+          <li>Să conțină cel puțin o imagine</li>
+          <li>Să conțină un tabel</li>
+          <li>Antet și subsol</li>
+          <li>Liste (bullet/number)</li>
+          <li>Minim 100 cuvinte</li>
+        </ul>
+        <a class="btn" href="/download-template">Descarcă fișierul suport (.docx)</a>
+      </section>
 
-  <div class="card">
-    <h3>Încarcă rezolvarea</h3>
-    <label>Nume elev: <input id="nume" required /></label><br/>
-    <input id="file" type="file" accept=".doc,.docx" />
-    <button id="send">Trimite pentru evaluare</button>
-    <div id="result" style="margin-top:12px"></div>
-  </div>
+      <section class="card">
+        <h3>Încarcă rezolvarea</h3>
+        <label>Nume elev: <input id="nume" required /></label><br/>
+        <label>Clasa:
+          <select id="clasa" required>
+            <option value="">Alege...</option>
+            <option>A</option><option>B</option><option>C</option>
+            <option>D</option><option>E</option><option>F</option>
+          </select>
+        </label><br/>
+        <label>Data testului: <input type="date" id="data_test" required></label><br/>
+        <input id="file" type="file" accept=".doc,.docx" />
+        <button id="send" class="btn">Trimite pentru evaluare</button>
+        <div id="result" style="margin-top:12px"></div>
+      </section>
 
-  <div class="card">
-    <h3>Panou profesor</h3>
-    <p>Accesează: <a href="/admin">/admin</a> (îți va cere parolă)</p>
+      <section class="card">
+        <h3>Panou profesor</h3>
+        <p>Accesează: <a href="/admin">/admin</a> (îți va cere parolă)</p>
+      </section>
+    </main>
   </div>
-
-<script>
-  document.getElementById('send').addEventListener('click', async ()=>{
-    const f = document.getElementById('file').files[0];
-    const nume = document.getElementById('nume').value;
-    if(!f){ alert('Selectează un fișier .docx'); return; }
-    const fd = new FormData();
-    fd.append('file', f);
-    if(!confirm('Ești sigur că acesta este fișierul final pe care vrei să îl trimiți?')) return;
-    fd.append('nume', nume);
-    fd.append('clasa', document.getElementById('clasa').value);
-    fd.append('data_test', document.getElementById('data_test').value);
-    document.getElementById('result').innerText = 'Se evaluează...';
-    try{
-      const res = await fetch('/evaluate', {method:'POST', body: fd});
-      const data = await res.json();
-      if(res.ok){
-        let html = `<h3>Scor: ${data.scor} / ${data.punctaj_maxim}</h3>`;
-        html += `<p>Număr cuvinte: ${data.nr_cuvinte}</p>`;
-        html += '<h4>Feedback</h4><ul>';
-        data.feedback.forEach(f=> html += `<li>${f}</li>`);
-        html += '</ul>';
-        document.getElementById('result').innerHTML = html;
-      } else {
-        document.getElementById('result').innerText = data.error || JSON.stringify(data);
-      }
-    } catch(e){
-      document.getElementById('result').innerText = 'Eroare: '+e;
-    }
-  });
-</script>
+  <script src="/static/js/custom.js"></script>
 </body>
 </html>

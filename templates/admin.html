@@ -3,34 +3,41 @@
 <head>
   <meta charset="utf-8">
   <title>Panou profesor</title>
+  <link rel="stylesheet" href="/static/css/style.css">
   <style>table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px}</style>
 </head>
 <body>
-  <h1>Panou profesor</h1>
-  <p><a href="/admin/export/csv?pw=profesor">Descarcă CSV</a> | <a href="/admin/export/xlsx?pw=profesor">Descarcă XLSX</a></p>
-  <table>
-    <thead><tr><th>#</th><th>Timestamp</th><th>Nume</th><th>Fisier</th><th>Scor</th><th>Detalii</th><th>PDF</th></tr></thead>
-    <tbody>
-    {% for r in records %}
-      <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ r.timestamp }}</td>
-        <td>{{ r.nume_elev }}</td>
-        <td>{{ r.fisier }}</td>
-        <td>{{ r.scor }} / {{ r.punctaj_maxim }}</td>
-        <td>
-          <ul>
-            {% for key in r.keys() %}
-              {% if key not in ['timestamp','nume_elev','fisier','scor','punctaj_maxim'] %}
-                <li>{{ key }}: {{ r[key] }}</li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </td>
-        <td><a href="/admin/result/{{ r.fisier }}/pdf?pw=profesor">Descarcă PDF</a></td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+  <div class="container">
+    <header><h1>Panou profesor</h1></header>
+    <main>
+      <p><a class="btn" href="/admin/export/csv?pw=profesor">Descarcă CSV</a> | <a class="btn" href="/admin/export/xlsx?pw=profesor">Descarcă XLSX</a></p>
+      <table class="results">
+        <thead><tr><th>#</th><th>Timestamp</th><th>Nume</th><th>Clasa</th><th>Data</th><th>Fisier</th><th>Scor</th><th>Detalii</th><th>PDF</th></tr></thead>
+        <tbody>
+        {% for r in records %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ r.timestamp }}</td>
+            <td>{{ r.nume_elev }}</td>
+            <td>{{ r.clasa }}</td>
+            <td>{{ r.data_test }}</td>
+            <td>{{ r.fisier }}</td>
+            <td>{{ r.scor }} / {{ r.punctaj_maxim }}</td>
+            <td>
+              <ul>
+                {% for key in r.keys() %}
+                  {% if key not in ['timestamp','nume_elev','clasa','data_test','fisier','scor','punctaj_maxim'] %}
+                    <li>{{ key }}: {{ r[key] }}</li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </td>
+            <td><a class="btn" href="/admin/result/{{ r.fisier }}/pdf?pw=profesor">Descarcă PDF</a></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </main>
+  </div>
 </body>
 </html>
