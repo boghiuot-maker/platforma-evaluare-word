@@ -292,3 +292,87 @@ def admin_delete_all():
             except Exception:
                 pass
     return redirect(f"/admin?pw={ADMIN_PASS}")
+
+
+@app.route('/uploads/<path:fname>')
+def download_original(fname):
+    if request.args.get('pw') != ADMIN_PASS:
+        return 'Unauthorized', 403
+    return send_from_directory(UPLOAD_FOLDER, fname, as_attachment=True)
+
+
+
+def filter_df_by_params(df, clasa=None, data_test=None):
+    if clasa:
+        df = df[df.get('clasa','') == clasa]
+    if data_test:
+        df = df[df.get('data_test','') == data_test]
+    return df
+
+
+
+@app.route('/admin/export/filtered/xlsx')
+def export_filtered_xlsx():
+    if request.args.get('pw') != ADMIN_PASS:
+        return 'Unauthorized', 403
+    clasa = request.args.get('clasa')
+    data_test = request.args.get('data_test')
+    if not os.path.exists(RESULTS_CSV):
+        return 'No results', 404
+    df = pd.read_csv(RESULTS_CSV)
+    df = filter_df_by_params(df, clasa, data_test)
+    # add per-criteria points as in previous implementation
+    for crit, pts in CRITERIA.items():
+        col_name = f"{crit}_pts"
+        if crit == 'numar_total_cuvinte':
+            if 'nr_cuvinte' in df.columns:
+                df[col_name] = df['nr_cuvinte'].apply(lambda v, p=pts: p if str(v).isdigit() and int(str(v))>=100 else 0)
+            else:
+                df[col_name] = 0
+        else:
+            if crit in df.columns:
+                df[col_name] = df[crit].apply(lambda v, p=pts: p if str(v).lower() in ['true','1','t','y'] else 0)
+            else:
+                df[col_name] = 0
+    out = io.BytesIO()
+    with pd.ExcelWriter(out, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='results')
+    out.seek(0)
+    return (out.read(), 200, {
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition': 'attachment; filename="results_filtered.xlsx"'
+    })
+
+
+@app.route('/admin/export/filtered/pdf')
+def export_filtered_pdf():
+    if request.args.get('pw') != ADMIN_PASS:
+        return 'Unauthorized', 403
+    clasa = request.args.get('clasa')
+    data_test = request.args.get('data_test')
+    if not os.path.exists(RESULTS_CSV):
+        return 'No results', 404
+    df = pd.read_csv(RESULTS_CSV)
+    df = filter_df_by_params(df, clasa, data_test)
+    out = io.BytesIO()
+    c = canvas.Canvas(out, pagesize=A4)
+    width, height = A4
+    y = height - 50
+    c.setFont('Helvetica-Bold', 14)
+    c.drawString(50, y, f"Rezultate filtrate - clasa: {clasa or 'Toate'}, data: {data_test or 'Toate'}")
+    y -= 30
+    c.setFont('Helvetica', 11)
+    for idx, row in df.iterrows():
+        line = f\"{row.get('nume_elev','')} | Clasa: {row.get('clasa','')} | Data: {row.get('data_test','')} | Scor: {row.get('scor','')}\"
+        c.drawString(50, y, line)
+        y -= 16
+        if y < 60:
+            c.showPage()
+            y = height - 50
+    c.showPage()
+    c.save()
+    out.seek(0)
+    return (out.read(), 200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename=\"results_filtered.pdf\"'
+    })
