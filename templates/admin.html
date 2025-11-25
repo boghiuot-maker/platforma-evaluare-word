@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset='utf-8'><link rel='stylesheet' href='/static/style.css'><title>Admin</title></head>
+<body><main class='container'><h1>Panou profesor</h1>
+<p><a class='btn' href='/admin/export_xlsx?pw={{pw}}'>Export XLSX</a>
+<a class='btn danger' href='/admin/delete_all?pw={{pw}}'>Șterge toate rezultatele</a></p>
+<table>
+<tr><th>Nume</th><th>Clasa</th><th>Data</th><th>Fișiere</th><th>ZIP</th></tr>
+{% for r in rows %}
+<tr>
+<td>{{r.get('Nume','-')}}</td>
+<td>{{r.get('Clasa','-')}}</td>
+<td>{{r.get('Data','-')}}</td>
+<td>
+{% for f in r.files %}
+<a href='/uploads/{{r.student}}/{{f}}'>{{f}}</a><br>
+{% endfor %}
+</td>
+<td><a class='btn' href='/admin/download_zip/{{r.student}}'>ZIP</a></td>
+</tr>
+{% endfor %}
+</table>
+</main></body></html>

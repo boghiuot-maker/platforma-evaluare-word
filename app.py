@@ -1,20 +1,19 @@
 
-from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort
-import os
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort, send_file
+import os, shutil
 from werkzeug.utils import secure_filename
+import pandas as pd
+import zipfile
+from io import BytesIO
 
-app = Flask(__name__)
-app.secret_key = 'dev-key-change-me'
+app=Flask(__name__)
+app.secret_key="key"
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+BASE=os.path.dirname(os.path.abspath(__file__))
+UPLOAD=os.path.join(BASE,"uploads")
+os.makedirs(UPLOAD,exist_ok=True)
 
-ALLOWED_PPT = {'.pptx'}
-ALLOWED_IMG = {'.gif', '.png', '.jpg', '.jpeg'}
-
-def allowed_file(filename, allowed_exts):
-    return '.' in filename and os.path.splitext(filename)[1].lower() in allowed_exts
+# ---- Student area ----
 
 @app.route('/')
 def index():
@@ -22,50 +21,111 @@ def index():
 
 @app.route('/download/<name>')
 def download_sample(name):
-    safe = secure_filename(name)
-    path = os.path.join(BASE_DIR, 'static')
-    if not os.path.exists(os.path.join(path, safe)):
-        abort(404)
-    return send_from_directory(path, safe, as_attachment=True)
+    f=secure_filename(name)
+    p=os.path.join(BASE,"static",f)
+    if not os.path.exists(p): abort(404)
+    return send_from_directory(os.path.join(BASE,"static"), f, as_attachment=True)
 
-@app.route('/submit', methods=['POST'])
+def allowed(fn, exts):
+    return "." in fn and os.path.splitext(fn)[1].lower() in exts
+
+@app.route('/submit',methods=['POST'])
 def submit():
-    name = request.form.get('name','').strip()
-    clasa = request.form.get('clasa','').strip()
-    data_test = request.form.get('data','').strip()
-    f1 = request.files.get('ap1_file')
-    f2 = request.files.get('ap2_pptx')
-    f2gif = request.files.get('ap2_gif')
-    if not name or not clasa or not data_test:
-        flash('Nume, clasa si data sunt obligatorii.', 'error')
-        return redirect(url_for('index'))
-    if not f1 or f1.filename == '' or not allowed_file(f1.filename, ALLOWED_PPT):
-        flash('Trebuie sa incarci fisierul PPTX pentru Aplicația 1.', 'error')
-        return redirect(url_for('index'))
-    if not f2 or f2.filename == '' or not allowed_file(f2.filename, ALLOWED_PPT):
-        flash('Trebuie sa incarci fisierul PPTX pentru Aplicația 2.', 'error')
-        return redirect(url_for('index'))
-    if not f2gif or f2gif.filename == '' or not allowed_file(f2gif.filename, ALLOWED_IMG):
-        flash('Trebuie sa incarci captura GIF pentru Aplicația 2.', 'error')
-        return redirect(url_for('index'))
-    student_dir = os.path.join(UPLOAD_FOLDER, secure_filename(name))
-    os.makedirs(student_dir, exist_ok=True)
-    ap1_name = 'aplicatia1_' + secure_filename(f1.filename)
-    ap2_name = 'aplicatia2_' + secure_filename(f2.filename)
-    gif_name = 'aplicatia2_' + secure_filename(f2gif.filename)
-    f1.save(os.path.join(student_dir, ap1_name))
-    f2.save(os.path.join(student_dir, ap2_name))
-    f2gif.save(os.path.join(student_dir, gif_name))
-    meta_path = os.path.join(student_dir, 'meta.txt')
-    with open(meta_path, 'w', encoding='utf-8') as mf:
-        mf.write(f'Nume={name}\\nClasa={clasa}\\nData={data_test}\\nAP1={ap1_name}\\nAP2={ap2_name}\\nAP2GIF={gif_name}\\n')
-    return render_template('submitted.html', name=name, files=[ap1_name, ap2_name, gif_name], student_dir=os.path.basename(student_dir))
+    name=request.form.get("name","").strip()
+    cl=request.form.get("clasa","").strip()
+    dt=request.form.get("data","").strip()
+    f1=request.files.get("ap1_file")
+    f2=request.files.get("ap2_pptx")
+    f3=request.files.get("ap2_gif")
+    if not name or not cl or not dt:
+        flash("Completeaza nume/clasa/data","error"); return redirect('/')
+    if not f1 or not allowed(f1.filename,{".pptx"}):
+        flash("Incarca PPTX aplicatia 1","error"); return redirect('/')
+    if not f2 or not allowed(f2.filename,{".pptx"}):
+        flash("Incarca PPTX aplicatia 2","error"); return redirect('/')
+    if not f3 or not allowed(f3.filename,{".gif"}):
+        flash("Incarca GIF aplicatia 2","error"); return redirect('/')
 
-@app.route('/uploads/<student>/<filename>')
-def uploaded_file(student, filename):
-    student_dir = os.path.join(UPLOAD_FOLDER, secure_filename(student))
-    safe = secure_filename(filename)
-    return send_from_directory(student_dir, safe, as_attachment=True)
+    sd=os.path.join(UPLOAD,secure_filename(name))
+    os.makedirs(sd,exist_ok=True)
+    ap1="ap1_"+secure_filename(f1.filename)
+    ap2="ap2_"+secure_filename(f2.filename)
+    gif="gif_"+secure_filename(f3.filename)
+    f1.save(os.path.join(sd,ap1))
+    f2.save(os.path.join(sd,ap2))
+    f3.save(os.path.join(sd,gif))
+    with open(os.path.join(sd,"meta.txt"),"w",encoding="utf8") as m:
+        m.write(f"Nume={name}\nClasa={cl}\nData={dt}\nAP1={ap1}\nAP2={ap2}\nGIF={gif}\n")
+    return render_template("submitted.html",name=name,files=[ap1,ap2,gif],student_dir=os.path.basename(sd))
 
-if __name__ == '__main__':
+@app.route('/uploads/<student>/<fn>')
+def up(student,fn):
+    sd=os.path.join(UPLOAD,secure_filename(student))
+    return send_from_directory(sd, secure_filename(fn), as_attachment=True)
+
+# ---- Admin ----
+
+PW="prof2025"
+
+@app.route('/admin')
+def admin():
+    if request.args.get("pw")!=PW:
+        return render_template("admin_login.html",error="Parola greșită" if "pw" in request.args else None)
+    # load students
+    rows=[]
+    for s in os.listdir(UPLOAD):
+        sd=os.path.join(UPLOAD,s)
+        if os.path.isdir(sd):
+            meta=os.path.join(sd,"meta.txt")
+            row={"student":s}
+            if os.path.exists(meta):
+                with open(meta,encoding="utf8") as f: 
+                    for line in f:
+                        if "=" in line:
+                            k,v=line.strip().split("=",1)
+                            row[k]=v
+            row["files"]=os.listdir(sd)
+            rows.append(row)
+    return render_template("admin.html",rows=rows,pw=PW)
+
+@app.route('/admin/download_zip/<student>')
+def admin_zip(student):
+    sd=os.path.join(UPLOAD,secure_filename(student))
+    mem=BytesIO()
+    with zipfile.ZipFile(mem,'w',zipfile.ZIP_DEFLATED) as z:
+        for f in os.listdir(sd):
+            z.write(os.path.join(sd,f), arcname=f)
+    mem.seek(0)
+    return send_file(mem, download_name=f"{student}.zip", as_attachment=True)
+
+@app.route('/admin/export_xlsx')
+def export_xlsx():
+    if request.args.get("pw")!=PW: abort(403)
+    data=[]
+    for s in os.listdir(UPLOAD):
+        sd=os.path.join(UPLOAD,s)
+        if os.path.isdir(sd):
+            row={"student":s}
+            meta=os.path.join(sd,"meta.txt")
+            if os.path.exists(meta):
+                with open(meta,encoding="utf8") as f:
+                    for line in f:
+                        if "=" in line:
+                            k,v=line.strip().split("=",1)
+                            row[k]=v
+            data.append(row)
+    df=pd.DataFrame(data)
+    mem=BytesIO()
+    df.to_excel(mem,index=False)
+    mem.seek(0)
+    return send_file(mem,download_name="rezultate.xlsx",as_attachment=True)
+
+@app.route('/admin/delete_all')
+def delete_all():
+    if request.args.get("pw")!=PW: abort(403)
+    shutil.rmtree(UPLOAD)
+    os.makedirs(UPLOAD)
+    return redirect(url_for('admin',pw=PW))
+
+if __name__=="__main__":
     app.run(debug=True)
