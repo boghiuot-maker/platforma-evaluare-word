@@ -1,0 +1,10 @@
+
+body{font-family:Arial,Helvetica,sans-serif;background:#f7f7f7;color:#222;padding:20px}
+.container{max-width:860px;margin:0 auto;background:#fff;padding:20px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,0.06)}
+h1{margin-top:0}
+fieldset{border:1px solid #ddd;padding:10px;margin-bottom:15px}
+label{display:block;margin-bottom:8px}
+section{margin-bottom:18px;padding:10px;border:1px dashed #ddd;border-radius:4px;background:#fbfbfb}
+.flashes{list-style:none;padding:0}
+.flashes li.error{color:#b00020}
+.btn{display:inline-block;padding:6px 10px;background:#007bff;color:#fff;border-radius:4px;text-decoration:none}

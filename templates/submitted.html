@@ -1,0 +1,16 @@
+
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Predare confirmata</title><link rel="stylesheet" href="/static/style.css"></head>
+<body>
+  <main class="container">
+    <h1>Predare reușită</h1>
+    <p>Mulțumim, {{name}} — testul a fost predat.</p>
+    <h3>Fișiere salvate:</h3>
+    <ul>
+    {% for f in files %}
+      <li><a href="/uploads/{{student_dir}}/{{f}}">{{f}}</a></li>
+    {% endfor %}
+    </ul>
+    <p><a href="/">Înapoi</a></p>
+  </main>
+</body></html>

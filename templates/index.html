@@ -1,50 +1,63 @@
+
 <!doctype html>
-<html lang="ro">
+<html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Platformă evaluare Word</title>
-  <link rel="stylesheet" href="/static/css/style.css">
+  <title>Test PowerPoint - Aplicațiile 1 & 2</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <div class="container">
-    <header><h1>Platformă evaluare Word - Practic</h1></header>
-    <main>
-      <section class="card">
-        <h3>Cerințe</h3>
-        <ul>
-          <li>Titlu setat ca Heading</li>
-          <li>Să conțină cel puțin o imagine</li>
-          <li>Să conțină un tabel</li>
-          <li>Antet și subsol</li>
-          <li>Liste (bullet/number)</li>
-          <li>Minim 100 cuvinte</li>
+  <main class="container">
+    <h1>Test PowerPoint - Aplicațiile 1 & 2</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for cat, msg in messages %}
+          <li class="{{cat}}">{{msg}}</li>
+        {% endfor %}
         </ul>
-        <a class="btn" href="/download-template">Descarcă fișierul suport (.docx)</a>
-      </section>
-
-      <section class="card">
-        <h3>Încarcă rezolvarea</h3>
-        <label>Nume elev: <input id="nume" required /></label><br/>
-        <label>Clasa:
-          <select id="clasa" required>
-            <option value="">Alege...</option>
-            <option>A</option><option>B</option><option>C</option>
-            <option>D</option><option>E</option><option>F</option>
+      {% endif %}
+    {% endwith %}
+    <form method="post" action="/submit" enctype="multipart/form-data">
+      <fieldset>
+        <legend>Informații test</legend>
+        <label>Nume (obligatoriu)<br><input type="text" name="name" required></label>
+        <label>Clasa<br>
+          <select name="clasa" required>
+            <option value="">Alege</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
           </select>
-        </label><br/>
-        <label>Data testului: <input type="date" id="data_test" required></label><br/>
-        <input id="file" type="file" accept=".doc,.docx" />
-        <button id="send" class="btn">Trimite pentru evaluare</button>
-        <div id="result" style="margin-top:12px"></div>
+        </label>
+        <label>Data testului<br><input type="date" name="data" required></label>
+      </fieldset>
+
+      <section>
+        <h2>Aplicația 1</h2>
+        <p><strong>Cerințe:</strong></p>
+        <ol>
+          <li>În caseta de text din mijlocul primului slide inserează un nou paragraf cu formula: ∆ = b² − 4∙a∙c. (5p)</li>
+          <li>Formatează paragrafele numerotate a), b), ... din caseta de jos a slide-ului 3 cu marcatori ♥ roșii. (5p)</li>
+          <li>Aplică tranziția Dizolvare (Dissolve) tuturor slide-urilor; avans doar la clic. (5p)</li>
+        </ol>
+        <p><a href="/download/comp_p1.pptx">Descarcă fișierul pentru Aplicația 1</a></p>
+        <p>Încarcă rezolvarea (.pptx): <input type="file" name="ap1_file" accept=".pptx" required></p>
       </section>
 
-      <section class="card">
-        <h3>Panou profesor</h3>
-        <p>Accesează: <a href="/admin">/admin</a> (îți va cere parolă)</p>
+      <section>
+        <h2>Aplicația 2</h2>
+        <p><strong>Cerințe:</strong></p>
+        <ol>
+          <li>În slide-ul 2, plasează una dintre imaginile grupate în spatele casetei de text astfel încât să se suprapună parțial. (5p)</li>
+          <li>Setează tipărirea doar pentru slide-urile 1 și 3; realizează o captură Print Screen și salvează ca tipar.gif în folderul fișiere de lucru. (5p)</li>
+          <li>Creează o expunere particularizată numită exp2131 cu ordinea 2,1,3,1 și setează avansul automat la 15 secunde. (5p)</li>
+        </ol>
+        <p><a href="/download/comp_p2.pptx">Descarcă fișierul pentru Aplicația 2</a></p>
+        <p>Încarcă rezolvarea (.pptx): <input type="file" name="ap2_pptx" accept=".pptx" required></p>
+        <p>Încarcă captura (tipar.gif): <input type="file" name="ap2_gif" accept=".gif,image/gif" required></p>
       </section>
-    </main>
-  </div>
-  <script src="/static/js/custom.js"></script>
+
+      <p><button type="submit">Predă testul</button></p>
+    </form>
+  </main>
 </body>
 </html>
