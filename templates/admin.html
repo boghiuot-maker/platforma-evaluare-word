@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <title>Panou profesor</title>
+  <style>table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px}</style>
+</head>
+<body>
+  <h1>Panou profesor</h1>
+  <p><a href="/admin/export/csv?pw=profesor">Descarcă CSV</a> | <a href="/admin/export/xlsx?pw=profesor">Descarcă XLSX</a></p>
+  <table>
+    <thead><tr><th>#</th><th>Timestamp</th><th>Nume</th><th>Fisier</th><th>Scor</th><th>Detalii</th><th>PDF</th></tr></thead>
+    <tbody>
+    {% for i, r in enumerate(records) %}
+      <tr>
+        <td>{{ i+1 }}</td>
+        <td>{{ r.timestamp }}</td>
+        <td>{{ r.nume_elev }}</td>
+        <td>{{ r.fisier }}</td>
+        <td>{{ r.scor }} / {{ r.punctaj_maxim }}</td>
+        <td>
+          <ul>
+            {% for key in r.keys() %}
+              {% if key not in ['timestamp','nume_elev','fisier','scor','punctaj_maxim'] %}
+                <li>{{ key }}: {{ r[key] }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </td>
+        <td><a href="/admin/result/{{ r.fisier }}/pdf?pw=profesor">Descarcă PDF</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
