@@ -363,7 +363,7 @@ def export_filtered_pdf():
     y -= 30
     c.setFont('Helvetica', 11)
     for idx, row in df.iterrows():
-        line = f\"{row.get('nume_elev','')} | Clasa: {row.get('clasa','')} | Data: {row.get('data_test','')} | Scor: {row.get('scor','')}\"
+        line = f"row.get('nume_elev','')} | Clasa: {row.get('clasa','')} | Data: {row.get('data_test','')} | Scor: {row.get('scor','')}"
         c.drawString(50, y, line)
         y -= 16
         if y < 60:
@@ -374,5 +374,5 @@ def export_filtered_pdf():
     out.seek(0)
     return (out.read(), 200, {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename=\"results_filtered.pdf\"'
+        'Content-Disposition': 'attachment; filename="results_filtered.pdf"'
     })
