@@ -112,12 +112,15 @@ def index():
 def download_template():
     return send_from_directory(DATA_FOLDER, TEMPLATE_FILE, as_attachment=True)
 
+
 @app.route('/evaluate', methods=['POST'])
 def evaluate():
     if 'file' not in request.files:
         return jsonify({'error':'Nu ai încărcat fișier'}),400
     file=request.files['file']
-    name=request.form.get('nume','Elev').strip()
+    name=request.form.get('nume','').strip()
+    if not name:
+        return jsonify({'error':'Numele este obligatoriu'}),400
     if file.filename=='' or not allowed_file(file.filename):
         return jsonify({'error':'Fișier invalid'}),400
     filename=secure_filename(f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")
@@ -137,10 +140,12 @@ def evaluate():
     scor,maxp=calculeaza_scor(rezultate,nr)
     fb=genereaza_feedback(rezultate,nr)
     row={'timestamp':datetime.datetime.now().isoformat(),'nume_elev':name,'fisier':filename,'scor':scor,'punctaj_maxim':maxp,'nr_cuvinte':nr}
-    row.update(rezultate)
-    os.makedirs(DATA_FOLDER,exist_ok=True)
+    # ensure all criteria keys present
+    for k in list(CRITERIA.keys()):
+        row[k]=rezultate.get(k, False) if k!='numar_total_cuvinte' else (nr>=100)
     append_result(row)
     return jsonify({'rezultate':rezultate,'scor':scor,'punctaj_maxim':maxp,'feedback':fb,'nr_cuvinte':nr})
+
 
 @app.route('/admin', methods=['GET','POST'])
 def admin():

@@ -11,9 +11,9 @@
   <table>
     <thead><tr><th>#</th><th>Timestamp</th><th>Nume</th><th>Fisier</th><th>Scor</th><th>Detalii</th><th>PDF</th></tr></thead>
     <tbody>
-    {% for r in records %}
+    {% for i, r in enumerate(records) %}
       <tr>
-        <td>{{ loop.index }}</td>
+        <td>{{ i+1 }}</td>
         <td>{{ r.timestamp }}</td>
         <td>{{ r.nume_elev }}</td>
         <td>{{ r.fisier }}</td>
