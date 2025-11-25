@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for, flash
+download-templatefrom flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 from docx import Document
 import os, csv, io, datetime
@@ -113,7 +113,7 @@ def index():
 
 @app.route('/download-template')
 def download_template():
-    return send_from_directory('.', TEMPLATE_FILE, as_attachment=True)
+    return send_from_directory('data', 'test_practic_suport.docx', as_attachment=True)
 
 @app.route('/evaluate', methods=['POST'])
 def evaluate():
