@@ -99,7 +99,7 @@ def calculeaza_scor(rezultate, nr_cuv):
 def append_result(row):
     header = ['timestamp','nume_elev','clasa','data_test','fisier','scor','punctaj_maxim','nr_cuvinte'] + list(CRITERIA.keys())
     exists = os.path.exists(RESULTS_CSV)
-    with open(RESULTS_CSV, 'a', newline='', encoding='utf-8') as f:
+    with open(RESULTS_CSV, 'a', new
         writer = csv.writer(f)
         if not exists:
             writer.writerow(header)
@@ -363,8 +363,10 @@ def export_filtered_pdf():
     y -= 30
     c.setFont('Helvetica', 11)
     for idx, row in df.iterrows():
-        line = f"{row.get(\'nume_elev\', \'\')} | Clasa: {row.get(\'clasa\', \'\')} | Data: {row.get(\'data_test\', \'\')} | Scor: {row.get(\'scor\', \'\')}"
-        c.drawString(50, y, line)
+            line = f"{row.get('nume_elev', '')} | Clasa: {row.get('clasa', '')} | Data: {row.get('data_test', '')} | Scor: {row.get('scor', '')}"
+            c.drawString(50, y, line)
+        
+        
         y -= 16
         if y < 60:
             c.showPage()
