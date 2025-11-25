@@ -48,7 +48,10 @@
     if(!f){ alert('Selectează un fișier .docx'); return; }
     const fd = new FormData();
     fd.append('file', f);
+    if(!confirm('Ești sigur că acesta este fișierul final pe care vrei să îl trimiți?')) return;
     fd.append('nume', nume);
+    fd.append('clasa', document.getElementById('clasa').value);
+    fd.append('data_test', document.getElementById('data_test').value);
     document.getElementById('result').innerText = 'Se evaluează...';
     try{
       const res = await fetch('/evaluate', {method:'POST', body: fd});
