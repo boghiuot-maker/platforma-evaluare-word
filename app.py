@@ -192,6 +192,7 @@ def export_csv():
         return 'No results', 404
     return send_from_directory(DATA_FOLDER, 'results.csv', as_attachment=True)
 
+
 @app.route('/admin/export/xlsx')
 def export_xlsx():
     if request.args.get('pw') != ADMIN_PASS:
@@ -199,13 +200,27 @@ def export_xlsx():
     if not os.path.exists(RESULTS_CSV):
         return 'No results', 404
     df = pd.read_csv(RESULTS_CSV)
+    # Add per-criteria points columns
+    for crit, pts in CRITERIA.items():
+        col_name = f"{crit}_pts"
+        if crit == 'numar_total_cuvinte':
+            # if numeric in nr_cuvinte, award pts if >=100
+            if 'nr_cuvinte' in df.columns:
+                df[col_name] = df['nr_cuvinte'].apply(lambda v, p=pts: p if str(v).isdigit() and int(str(v))>=100 else 0)
+            else:
+                df[col_name] = 0
+        else:
+            if crit in df.columns:
+                df[col_name] = df[crit].apply(lambda v, p=pts: p if str(v).lower() in ['true','1','t','y'] else 0)
+            else:
+                df[col_name] = 0
     out = io.BytesIO()
     with pd.ExcelWriter(out, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='results')
     out.seek(0)
     return (out.read(), 200, {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'Content-Disposition': 'attachment; filename="results.xlsx"'
+        'Content-Disposition': 'attachment; filename="results_with_points.xlsx"'
     })
 
 @app.route('/admin/result/<filename>/pdf')
@@ -254,3 +269,26 @@ if __name__ == '__main__':
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     os.makedirs(DATA_FOLDER, exist_ok=True)
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+
+
+@app.route('/admin/delete_all', methods=['POST'])
+def admin_delete_all():
+    if request.args.get('pw') != ADMIN_PASS and request.form.get('pw') != ADMIN_PASS:
+        return 'Unauthorized', 403
+    # delete results csv
+    if os.path.exists(RESULTS_CSV):
+        try:
+            os.remove(RESULTS_CSV)
+        except Exception:
+            pass
+    # clear uploads folder
+    if os.path.exists(UPLOAD_FOLDER):
+        for fname in os.listdir(UPLOAD_FOLDER):
+            fpath = os.path.join(UPLOAD_FOLDER, fname)
+            try:
+                if os.path.isfile(fpath):
+                    os.remove(fpath)
+            except Exception:
+                pass
+    return redirect(f"/admin?pw={ADMIN_PASS}")

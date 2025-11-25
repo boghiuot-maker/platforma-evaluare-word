@@ -10,7 +10,7 @@
   <div class="container">
     <header><h1>Panou profesor</h1></header>
     <main>
-      <p><a class="btn" href="/admin/export/csv?pw=profesor">Descarcă CSV</a> | <a class="btn" href="/admin/export/xlsx?pw=profesor">Descarcă XLSX</a></p>
+      <p><a class="btn" href="/admin/export/xlsx?pw=profesor">Descarcă XLSX</a> &nbsp; <form method="post" action="/admin/delete_all?pw=profesor" style="display:inline" onsubmit="return confirm('Sigur vrei să ștergi toate rezultatele și fișierele încărcate?');"><button class="btn" type="submit">Șterge toate rezultatele</button></form></p>
       <table class="results">
         <thead><tr><th>#</th><th>Timestamp</th><th>Nume</th><th>Clasa</th><th>Data</th><th>Fisier</th><th>Scor</th><th>Detalii</th><th>PDF</th></tr></thead>
         <tbody>
