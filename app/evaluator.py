@@ -304,41 +304,23 @@ def generate_report_files(folder:Path, name, klass, date, results, reports_dir:P
 
     txtp.write_text("\\n".join(lines), encoding='utf-8')
 
-    # PDF generation with basic font
-    pdf = FPDF()
-    pdf.add_page()
-    try:
-        font_path = Path(__file__).resolve().parent / 'static' / 'fonts' / 'DejaVuSans.ttf'
-        pdf.add_font('DejaVu', '', str(font_path), uni=True)
-        pdf.set_font('DejaVu', size=12)
-    except Exception as e:
-        # fallback
-        pdf.set_font('Arial', size=12)
-    # PDF generation using reportlab for proper Unicode support
-    try:
-        from reportlab.pdfgen import canvas
-        from reportlab.lib.pagesizes import A4
-        from reportlab.pdfbase import pdfmetrics
-        from reportlab.pdfbase.ttfonts import TTFont
-        font_path = Path(__file__).resolve().parent / 'static' / 'fonts' / 'DejaVuSans.ttf'
-        pdfmetrics.registerFont(TTFont('DejaVu', str(font_path)))
-        c = canvas.Canvas(str(pdfp), pagesize=A4)
-        width, height = A4
-        textobject = c.beginText(40, height - 40)
-        textobject.setFont('DejaVu', 11)
-        for ln in lines:
-            textobject.textLine(ln)
-        c.drawText(textobject)
-        c.showPage()
-        c.save()
-    except Exception as e:
-        # fallback to simple text PDF
-        fallback_pdf = FPDF()
-        fallback_pdf.add_page()
-        fallback_pdf.set_font('Arial', size=12)
-        for ln in lines:
-            fallback_pdf.multi_cell(0,6,ln)
-        fallback_pdf.output(str(pdfp))
+    
+    # PDF generation using reportlab only
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    font_path = Path(__file__).resolve().parent / "static" / "fonts" / "DejaVuSans.ttf"
+    pdfmetrics.registerFont(TTFont("DejaVu", str(font_path)))
+    c = canvas.Canvas(str(pdfp), pagesize=A4)
+    width, height = A4
+    textobject = c.beginText(40, height - 40)
+    textobject.setFont("DejaVu", 11)
+    for ln in lines:
+        textobject.textLine(ln)
+    c.drawText(textobject)
+    c.showPage()
+    c.save()
 
     # XLSX
     wb = Workbook()
