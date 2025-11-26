@@ -1,6 +1,7 @@
+
 Flask==2.2.5
+gunicorn==23.0.0
 python-pptx==0.6.21
 openpyxl==3.1.2
-fpdf==1.7.2
+fpdf2==2.7.8
 Werkzeug==2.2.3
-gunicorn==23.0.0

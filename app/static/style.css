@@ -1,8 +1,0 @@
-body{font-family: Arial, sans-serif; background:#f4f7fb; color:#03396c}
-.container{width:900px; margin:30px auto; background:white; padding:20px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-h1{color:#014f86}
-fieldset{border:1px solid #d0e7ff; padding:12px; margin-bottom:12px}
-.app-block{background:#fbfdff;border:1px solid #e6f0ff;padding:10px;margin-bottom:10px;border-radius:6px}
-label{display:block;margin:6px 0}
-.submit-row{margin-top:16px}
-button{background:#007acc;color:white;padding:10px 18px;border:none;border-radius:6px;font-size:16px}
