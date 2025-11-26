@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, send_file
 import os, uuid, zipfile
 from pathlib import Path
-from evaluator import evaluate_student_package, generate_report_files
+from app.evaluator import evaluate_student_package, generate_report_files
 from werkzeug.utils import secure_filename
 
 BASE_DIR = Path(__file__).resolve().parent
