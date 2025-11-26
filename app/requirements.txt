@@ -1,0 +1,5 @@
+Flask==2.2.5
+python-pptx==0.6.21
+openpyxl==3.1.2
+fpdf==1.7.2
+Werkzeug==2.2.3
