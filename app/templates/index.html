@@ -1,39 +1,69 @@
-
 <!doctype html>
 <html>
-<head><meta charset="utf-8"><title>Evaluare PowerPoint</title></head>
+<head>
+  <meta charset="utf-8">
+  <title>Evaluare PowerPoint</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
 <body>
+
+<div class="container">
+
 <h1>Evaluare PowerPoint</h1>
 
 <form method="post" action="/submit" enctype="multipart/form-data">
-<label>Nume elev: <input name="student_name" required></label><br>
-<label>Clasa: 
-<select name="student_class" required>
-<option>A</option><option>B</option><option>C</option>
-<option>D</option><option>E</option><option>F</option>
-</select></label><br>
-<label>Data: <input type="date" name="test_date" required></label><br><br>
 
-<h3>Fișiere suport</h3>
-<a href="/download_zip">Descarcă toate (ZIP)</a>
-<ul>
-{% for f in support_files %}
-<li><a href="/download/{{f}}">{{f}}</a></li>
-{% endfor %}
-</ul>
+<div class="card">
+  <h2>Detalii candidat</h2>
+  <label>Nume elev:
+    <input type="text" name="student_name" required>
+  </label>
+  <label>Clasa:
+    <select name="student_class" required>
+      <option value="">Alege</option>
+      <option>A</option><option>B</option><option>C</option>
+      <option>D</option><option>E</option><option>F</option>
+    </select>
+  </label>
+  <label>Data testării:
+    <input type="date" name="test_date" required>
+  </label>
+</div>
 
-<h3>Încărcare aplicații</h3>
+<div class="card">
+  <h2>Fișiere suport</h2>
+  <p><a href="/download_zip">Descarcă toate (ZIP)</a></p>
+  <ul>
+    {% for f in support_files %}
+      <li><a href="/download/{{f}}">{{f}}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
 {% for i in range(1,7) %}
-<div>
-<h4>Aplicația {{i}}</h4>
-<input type="file" name="ppt_upload_{{i}}">
-{% if i==2 %}
-<br>Captură obligatorie: <input type="file" name="capture_2">
-{% endif %}
-</div><br>
+<div class="card">
+  <h2>Aplicația {{i}}</h2>
+  <p><b>Cerinte:</b> (vor fi adăugate aici)</p>
+
+  <label>Încarcă fișier PPT/PPTX:
+    <input type="file" name="ppt_upload_{{i}}">
+  </label>
+
+  {% if i == 2 %}
+  <label>Captură obligatorie:
+    <input type="file" name="capture_2">
+  </label>
+  {% endif %}
+</div>
 {% endfor %}
 
-<button type="submit">Trimite</button>
+<div class="submit-row">
+  <button type="submit">Trimite și Evaluează</button>
+</div>
+
 </form>
+
+</div>
+
 </body>
 </html>
