@@ -129,7 +129,7 @@ def generate_report_files(folder:Path, name, klass, date, results, reports_dir:P
         t = pres.slides[0].shapes.title.text.strip() if pres.slides[0].shapes.title else ""
     except Exception:
         t = ""
-    r2 = ("OK" if t=="Evaluare competențe PowerPoint" else f'NU (found: \"{t}\")')
+    r2 = ("OK" if t=="Evaluare competențe PowerPoint" else f'NU (found: "{t}")')
     checks.append(("Cerința 2", r2))
     if r2.startswith("OK"): total_ok += 1
     # Req3 slide3 title
@@ -138,7 +138,7 @@ def generate_report_files(folder:Path, name, klass, date, results, reports_dir:P
         t3 = pres.slides[2].shapes.title.text.strip() if pres.slides[2].shapes.title else ""
     except Exception:
         t3 = ""
-    r3 = ("OK" if t3=="Structură" else f'NU (found: \"{t3}\")')
+    r3 = ("OK" if t3=="Structură" else f'NU (found: "{t3}")')
     checks.append(("Cerința 3", r3))
     if r3.startswith("OK"): total_ok += 1
     # Req4 list on slide2 with 3 bullets
@@ -156,7 +156,7 @@ def generate_report_files(folder:Path, name, klass, date, results, reports_dir:P
     checks.append(("Cerința 4", r4))
     if r4.startswith("OK"): total_ok += 1
     # Req5 first bullet text equals Introducere
-    r5 = ("OK" if bullets and bullets[0]=="Introducere" else f'NU (found: \"{bullets[0] if bullets else \"\"}\")')
+    r5 = ("OK" if bullets and bullets[0]=="Introducere" else f'NU (found: "{bullets[0] if bullets else ""}")')
     checks.append(("Cerința 5", r5))
     if r5.startswith("OK"): total_ok += 1
     # Req6 bullet type (best-effort: check for bullet char in xml)
@@ -224,7 +224,7 @@ def generate_report_files(folder:Path, name, klass, date, results, reports_dir:P
             if getattr(shp,'has_table',False):
                 tbl = shp.table
                 cell = tbl.cell(0,0).text.strip()
-                r11 = ("OK" if cell=="Total" else f'NU (found: \"{cell}\")')
+                r11 = ("OK" if cell=="Total" else f'NU (found: "{cell}")')
                 break
     except Exception:
         r11 = "NU (error)"
@@ -284,7 +284,7 @@ def generate_report_files(folder:Path, name, klass, date, results, reports_dir:P
     # Req17 notes on slide3 contain text
     try:
         notes = pres.slides[2].notes_slide.notes_text_frame.text.strip() if pres.slides[2].has_notes_slide else ""
-        r17 = ("OK" if "Notă pentru evaluator" in notes else f'NU (found: \"{notes}\")')
+        r17 = ("OK" if "Notă pentru evaluator" in notes else f'NU (found: "{notes}")')
     except Exception:
         r17 = "NU (error)"
     checks.append(("Cerința 17", r17))
@@ -308,13 +308,37 @@ def generate_report_files(folder:Path, name, klass, date, results, reports_dir:P
     pdf = FPDF()
     pdf.add_page()
     try:
-        pdf.add_font("DejaVu","", "static/fonts/DejaVuSans.ttf", uni=True)
-        pdf.set_font("DejaVu", size=12)
-    except Exception:
-        pdf.set_font("Arial", size=12)
-    for ln in lines:
-        pdf.multi_cell(0,6,ln)
-    pdf.output(str(pdfp))
+        font_path = Path(__file__).resolve().parent / 'static' / 'fonts' / 'DejaVuSans.ttf'
+        pdf.add_font('DejaVu', '', str(font_path), uni=True)
+        pdf.set_font('DejaVu', size=12)
+    except Exception as e:
+        # fallback
+        pdf.set_font('Arial', size=12)
+    # PDF generation using reportlab for proper Unicode support
+    try:
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.pagesizes import A4
+        from reportlab.pdfbase import pdfmetrics
+        from reportlab.pdfbase.ttfonts import TTFont
+        font_path = Path(__file__).resolve().parent / 'static' / 'fonts' / 'DejaVuSans.ttf'
+        pdfmetrics.registerFont(TTFont('DejaVu', str(font_path)))
+        c = canvas.Canvas(str(pdfp), pagesize=A4)
+        width, height = A4
+        textobject = c.beginText(40, height - 40)
+        textobject.setFont('DejaVu', 11)
+        for ln in lines:
+            textobject.textLine(ln)
+        c.drawText(textobject)
+        c.showPage()
+        c.save()
+    except Exception as e:
+        # fallback to simple text PDF
+        fallback_pdf = FPDF()
+        fallback_pdf.add_page()
+        fallback_pdf.set_font('Arial', size=12)
+        for ln in lines:
+            fallback_pdf.multi_cell(0,6,ln)
+        fallback_pdf.output(str(pdfp))
 
     # XLSX
     wb = Workbook()
