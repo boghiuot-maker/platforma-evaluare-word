@@ -1,0 +1,44 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Panou profesor V3</title>
+<link rel="stylesheet" href="/static/css/style.css"></head><body>
+<main class="container">
+  <h1>Panou profesor V3</h1>
+  <form method="get" action="/admin">
+    <input type="hidden" name="pw" value="{{pw}}">
+    <label>Clasa:
+      <select name="class">
+        <option value="">Toate</option>
+        {% for c in ['A','B','C','D','E','F'] %}
+        <option value="{{c}}" {% if filters.class==c %}selected{% endif %}>{{c}}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Nume: <input type="text" name="name" value="{{filters.name}}"></label>
+    <label>Data: <input type="date" name="date" value="{{filters.date}}"></label>
+    <button class="btn" type="submit">Filtrează</button>
+    <a class="btn" href="/admin?pw={{pw}}">Reset filtre</a>
+    <a class="btn" href="/admin/export_xlsx?pw={{pw}}&class={{filters.class}}&name={{filters.name}}&date={{filters.date}}">Export XLSX</a>
+    <a class="btn danger" href="/admin/delete_all?pw={{pw}}" onclick="return confirm('Șterge toate rezultatele?');">Șterge toate rezultatele</a>
+  </form>
+
+  <table>
+  <thead><tr><th>Nume</th><th>Clasa</th><th>Data</th><th>Ap1</th><th>Ap2</th><th>Ap3</th><th>Ap4</th><th>Ap5</th><th>Ap6</th><th>ZIP</th><th>Acțiuni</th></tr></thead>
+  <tbody>
+  {% for r in rows %}
+    <tr>
+      <td>{{ r.meta.name }}</td>
+      <td>{{ r.meta.class }}</td>
+      <td>{{ r.meta.date }}</td>
+      {% for i in range(1,7) %}
+      <td>
+        {% for f in r.meta.files.get('ap'+i|string,[]) %}
+          <a href="/uploads/{{r.student}}/{{f}}">{{f}}</a><br>
+        {% endfor %}
+      </td>
+      {% endfor %}
+      <td><a class="btn" href="/admin/download_zip/{{r.student}}">ZIP</a></td>
+      <td><a class="btn" href="/uploads/{{r.student}}/meta.json">meta.json</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+  </table>
+</main></body></html>
