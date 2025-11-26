@@ -7,6 +7,9 @@ from app.evaluator import evaluate_student_package, generate_report_files
 
 BASE = Path(__file__).resolve().parent
 UPLOAD = BASE/'uploads'
+
+# ensure upload dir exists
+UPLOAD.mkdir(parents=True, exist_ok=True)
 FILES = BASE/'files'
 REPORTS = BASE/'reports'
 
@@ -40,7 +43,7 @@ def submit():
         return redirect(url_for('index'))
     sid = uuid.uuid4().hex[:8]
     folder = UPLOAD / f"{name.replace(' ','_')}_{klass}_{sid}"
-    folder.mkdir()
+    folder.mkdir(parents=True, exist_ok=True)
 
     for i in range(1,7):
         f = request.files.get(f"ppt_upload_{i}")
