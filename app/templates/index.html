@@ -1,140 +1,43 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Evaluare PowerPoint</title>
-  <link rel="stylesheet" href="/static/style.css">
-</head>
+<head><meta charset="utf-8"><title>Evaluare PowerPoint</title><link rel="stylesheet" href="/static/css/style.css"></head>
 <body>
 <div class="container">
-<h1>Evaluare PowerPoint</h1>
-<form method="post" action="/submit" enctype="multipart/form-data">
-<div class="card">
-  <h2>Detalii elev</h2>
-  <label>Nume elev:
-    <input type="text" name="student_name" required>
-  </label>
-  <label>Clasa:
-    <select name="student_class" required>
-      <option value="">Alege</option>
-      <option>A</option><option>B</option><option>C</option>
-      <option>D</option><option>E</option><option>F</option>
-    </select>
-  </label>
-  <label>Data testării:
-    <input type="date" name="test_date" required>
-  </label>
-</div>
+  <h1>Evaluare PowerPoint</h1>
+  <form method="post" action="/submit" enctype="multipart/form-data">
+    <div class="card">
+      <h2>Detalii elev</h2>
+      <label>Nume elev: <input type="text" name="student_name" required></label>
+      <label>Clasa: <select name="student_class" required><option value=''>Alege</option><option>A</option><option>B</option><option>C</option></select></label>
+      <label>Data testării: <input type="date" name="test_date" required></label>
+    </div>
+    <div class="card">
+      <h2>Fișiere suport</h2>
+      <p><a href="/download_zip">Descarcă toate (ZIP)</a></p>
+      <ul>{% for f in support_files %}<li><a href="/download/{{f}}">{{f}}</a></li>{% endfor %}</ul>
+    </div>
 
-<div class="card">
-  <h2>Fișiere suport</h2>
-  <p><a href="/download_zip">Descarcă toate (ZIP)</a></p>
-  <ul>
-    {% for f in support_files %}
-      <li><a href="/download/{{f}}">{{f}}</a></li>
-    {% endfor %}
-  </ul>
-</div>
-
-<div class="card">
-  <h2>Aplicația 1</h2>
-  <p><strong>Deschideți fișierul <code>comp_p1.pptx</code> și rezolvați următoarele cerințe:</strong></p>
-  <ol type="a">
-    <li>Creați un fișier PowerPoint cu <strong>exact 4 slide-uri</strong>.</li>
-    <li>Pe slide-ul 1 introduceți titlul exact: <em>Evaluare competențe PowerPoint</em>.</li>
-    <li>Redenumiți slide-ul 3 în panoul titlurilor cu textul: <em>Structură</em>.</li>
-  </ol>
-  <label>Încarcă fișier PPT/PPTX:
-    <input type="file" name="ppt_upload_1">
-  </label>
-  
-</div>
-
-<div class="card">
-  <h2>Aplicația 2</h2>
-  <p><strong>Deschideți fișierul <code>comp_p2.pptx</code> și rezolvați următoarele cerințe:</strong></p>
-  <ol type="a">
-    <li>Pe slide-ul 2 creați o listă cu <strong>exact 3 puncte</strong> (bullet list).</li>
-    <li>Primul element din listă trebuie să conțină textul: <em>Introducere</em>.</li>
-    <li>Pentru lista de pe slide-ul 2 setați un marcator circular simplu (•).</li>
-  </ol>
-  <label>Încarcă fișier PPT/PPTX:
-    <input type="file" name="ppt_upload_2">
-  </label>
-  <label>Captură obligatorie:
-    <input type="file" name="capture_2">
-  </label>
-
-</div>
-
-<div class="card">
-  <h2>Aplicația 3</h2>
-  <p><strong>Deschideți fișierul <code>comp_p3.pptx</code> și rezolvați următoarele cerințe:</strong></p>
-  <ol type="a">
-    <li>Introduceți pe slide-ul 3 <strong>cel puțin o imagine</strong> (object picture).</li>
-    <li>Redimensionați imaginea astfel încât lățimea să fie între <strong>6.5 și 7.5 cm</strong>.</li>
-    <li>Atribuiți imaginii text alternativ (alt text): <em>Imagine exemplu</em>.</li>
-  </ol>
-  <label>Încarcă fișier PPT/PPTX:
-    <input type="file" name="ppt_upload_3">
-  </label>
-  
-</div>
-
-<div class="card">
-  <h2>Aplicația 4</h2>
-  <p><strong>Deschideți fișierul <code>comp_p4.pptx</code> și rezolvați următoarele cerințe:</strong></p>
-  <ol type="a">
-    <li>Pe slide-ul 4 creați un tabel cu <strong>3 coloane și 2 rânduri</strong>.</li>
-    <li>Introduceți textul exact <em>Total</em> în prima celulă (rând 1, col 1).</li>
-    <li>Pe același slide inserați o diagramă de tip <strong>Column Chart</strong>.</li>
-  </ol>
-  <label>Încarcă fișier PPT/PPTX:
-    <input type="file" name="ppt_upload_4">
-  </label>
-  
-</div>
-
-<div class="card">
-  <h2>Aplicația 5</h2>
-  <p><strong>Deschideți fișierul <code>comp_p5.pptx</code> și rezolvați următoarele cerințe:</strong></p>
-  <ol type="a">
-    <li>Aplicați pe slide-ul 1 tranziția <strong>Fade</strong>.</li>
-    <li>Setați durata tranziției la <strong>1 secundă</strong>.</li>
-    <li>Pe slide-ul 2 animați primul placeholder cu efectul <strong>Wipe (from left)</strong>.</li>
-  </ol>
-  <label>Încarcă fișier PPT/PPTX:
-    <input type="file" name="ppt_upload_5">
-  </label>
-  
-</div>
-
-<div class="card">
-  <h2>Aplicația 6</h2>
-  <p><strong>Deschideți fișierul <code>comp_p6.pptx</code> și rezolvați următoarele cerințe:</strong></p>
-  <ol type="a">
-    <li>Creați pe slide-ul 1 un hyperlink către adresa: <em>https://www.icdl.org</em>.</li>
-    <li>Pe slide-ul 3 introduceți o notă în secțiunea Notes cu textul: <em>Notă pentru evaluator</em>.</li>
-    <li>Exportați prezentarea în format PDF cu numele <strong>rezolvare.pdf</strong> și încărcați-l.</li>
-  </ol>
-  <label>Încarcă fișier PPT/PPTX:
-    <input type="file" name="ppt_upload_6">
-  </label>
-  
-</div>
-
-<div class="card">
-  <h2>Export PDF</h2>
-  <label>Încarcă fișierul PDF exportat (nume: rezolvare.pdf, obligatoriu):
-    <input type="file" name="export_pdf" required>
-  </label>
-</div>
-
-<div class="submit-row">
-  <button type="submit">Trimite și Evaluează</button>
-</div>
-
-</form>
-</div>
-</body>
-</html>
+    <div class="card">
+      <h2>Aplicația 1</h2>
+      <p><strong>Deschideți fișierul <code>comp_p1.pptx</code> și rezolvați următoarele cerințe:</strong></p>
+      <ol type="a"><li>Creați un fișier PowerPoint cu exact 4 slide-uri.</li><li>Pe slide-ul 1 introduceți titlul exact: Evaluare competențe PowerPoint.</li><li>Redenumiți slide-ul 3: Structură.</li></ol><label>Încarcă fișier PPT/PPTX: <input type="file" name="ppt_upload_1"></label></div>
+    <div class="card">
+      <h2>Aplicația 2</h2>
+      <p><strong>Deschideți fișierul <code>comp_p2.pptx</code> și rezolvați următoarele cerințe:</strong></p>
+      <ol type="a"><li>Pe slide-ul 2 creați o listă cu exact 3 puncte.</li><li>Primul element: Introducere.</li><li>Setați marcator circular (•).</li></ol><label>Încarcă fișier PPT/PPTX: <input type="file" name="ppt_upload_2"></label><label>Captură (opțional): <input type="file" name="capture_2"></label></div>
+    <div class="card">
+      <h2>Aplicația 3</h2>
+      <p><strong>Deschideți fișierul <code>comp_p3.pptx</code> și rezolvați următoarele cerințe:</strong></p>
+      <ol type="a"><li>Introduceți pe slide-ul 3 cel puțin o imagine.</li><li>Redimensionați imaginea la 6.5-7.5 cm lățime.</li><li>Atribuiți alt text: Imagine exemplu.</li></ol><label>Încarcă fișier PPT/PPTX: <input type="file" name="ppt_upload_3"></label></div>
+    <div class="card">
+      <h2>Aplicația 4</h2>
+      <p><strong>Deschideți fișierul <code>comp_p4.pptx</code> și rezolvați următoarele cerințe:</strong></p>
+      <ol type="a"><li>Pe slide-ul 4 creați un tabel 3x2.</li><li>Introduceți textul Total în prima celulă.</li><li>Inserți o diagramă Column Chart.</li></ol><label>Încarcă fișier PPT/PPTX: <input type="file" name="ppt_upload_4"></label></div>
+    <div class="card">
+      <h2>Aplicația 5</h2>
+      <p><strong>Deschideți fișierul <code>comp_p5.pptx</code> și rezolvați următoarele cerințe:</strong></p>
+      <ol type="a"><li>Aplicați pe slide-ul 1 tranziția Fade.</li><li>Setați durata la 1 secundă.</li><li>Pe slide-ul 2 animați primul placeholder cu Wipe (from left).</li></ol><label>Încarcă fișier PPT/PPTX: <input type="file" name="ppt_upload_5"></label></div>
+    <div class="card">
+      <h2>Aplicația 6</h2>
+      <p><strong>Deschideți fișierul <code>comp_p6.pptx</code> și rezolvați următoarele cerințe:</strong></p>
+      <ol type="a"><li>Creați pe slide-ul 1 un hyperlink către https://www.icdl.org.</li><li>Pe slide-ul 3 introduceți o notă: Notă pentru evaluator.</li><li>Exportați prezentarea în format PDF cu numele rezolvare.pdf și încărcați-l.</li></ol><label>Încarcă fișier PPT/PPTX: <input type="file" name="ppt_upload_6"></label><label>Încarcă fișierul PDF exportat (nume: rezolvare.pdf, obligatoriu): <input type="file" name="export_pdf" required></label></div><div class="submit-row"><button type="submit">Trimite și Evaluează</button></div></form></div></body></html>
