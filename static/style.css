@@ -1,7 +1,14 @@
-body{font-family:Arial;background:#f5f5f5;padding:20px}
-.container{background:#fff;padding:20px;margin:auto;max-width:900px;border-radius:6px;box-shadow:0 2px 8px #ccc}
-table{width:100%;border-collapse:collapse;margin-top:20px}
-th,td{border:1px solid #ddd;padding:6px;text-align:left}
-.btn{padding:4px 8px;background:#007bff;color:#fff;text-decoration:none;border-radius:4px}
-.btn.danger{background:#c00}
-.flashes{color:red}
+
+body{font-family:Inter,Arial,Helvetica,sans-serif;background:#f4f6f8;padding:20px;color:#222}
+.container{max-width:900px;margin:0 auto;background:white;padding:20px;border-radius:8px;box-shadow:0 6px 18px rgba(15,20,25,0.08)}
+h1{margin-top:0}
+.card{border:1px solid #e6e9ee;padding:14px;border-radius:6px;margin-bottom:12px;background:#fff}
+.req{font-weight:600;margin-bottom:6px}
+label{display:block;margin:6px 0}
+.btn{display:inline-block;padding:6px 10px;background:#0b6efd;color:white;border-radius:6px;text-decoration:none}
+.primary{background:#0b6efd;color:white;padding:10px 14px;border-radius:6px;border:none}
+.flashes{color:#b00020}
+.hint{color:#555;font-size:0.95em}
+table{width:100%;border-collapse:collapse;margin-top:14px}
+th,td{border:1px solid #e6e9ee;padding:8px;text-align:left}
+.btn.danger{background:#d6453b}

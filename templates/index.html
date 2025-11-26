@@ -1,25 +1,46 @@
-<!doctype html><html><head><meta charset='utf-8'><link rel='stylesheet' href='/static/style.css'><title>Test PPT</title></head>
-<body><main class='container'>
-<h1>Test PowerPoint – Aplicațiile 1 & 2</h1>
-{% with m=get_flashed_messages(with_categories=true) %}{% if m %}<ul class=flashes>{% for c,t in m %}<li class='{{c}}'>{{t}}</li>{% endfor %}</ul>{% endif %}{% endwith %}
-<form method=post action='/submit' enctype='multipart/form-data'>
-<fieldset><legend>Informații test</legend>
-<label>Nume<br><input name=name required></label>
-<label>Clasa<br><select name=clasa required><option value=''>Alege</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
-<label>Data<br><input type=date name=data required></label>
-</fieldset>
 
-<h2>Aplicația 1</h2>
-<ol><li>Formula ∆ = b² − 4∙a∙c</li><li>Marcatori ♥ roșii în slide 3</li><li>Tranziție Dissolve, avans la clic</li></ol>
-<a href='/download/comp_p1.pptx'>Descarcă fișier</a>
-<p><input type=file name=ap1_file accept='.pptx' required></p>
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Test PowerPoint - Aplicațiile 1 & 2</title>
+<link rel="stylesheet" href="/static/style.css"></head><body>
+<main class="container">
+  <h1>Test PowerPoint</h1>
+  {% with m = get_flashed_messages(with_categories=true) %}{% if m %}<ul class="flashes">{% for c,t in m %}<li class="{{c}}">{{t}}</li>{% endfor %}</ul>{% endif %}{% endwith %}
 
-<h2>Aplicația 2</h2>
-<ol><li>Imagine în spatele casetei text</li><li>Tipărire slide 1&3 + GIF</li><li>Expunere exp2131 cu avans 15s</li></ol>
-<a href='/download/comp_p2.pptx'>Descarcă fișier</a>
-<p><input type=file name=ap2_pptx accept='.pptx' required></p>
-<p><input type=file name=ap2_gif accept='.gif' required></p>
+  <form method="post" action="/submit" enctype="multipart/form-data" onsubmit="return confirm('Ești sigur că vrei să predai testul? După predare nu poți modifica fișierele.');">
+    <section class="card">
+      <h2>Informații test</h2>
+      <label>Nume (obligatoriu)<br><input type="text" name="name" required></label>
+      <label>Clasa<br><select name="clasa" required><option value=''>Alege</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+      <label>Data testului<br><input type="date" name="data" required></label>
+    </section>
 
-<p><button>Predă testul</button></p>
-</form>
-</main></body></html>
+    <section class="card">
+      <h2>Aplicația 1</h2>
+      <div class="req">Cerințe:</div>
+      <ol>
+        <li>În caseta de text din mijlocul primului slide inserați un paragraf cu formula: ∆ = b² − 4∙a∙c.</li>
+        <li>Formatați paragrafele numerotate a), b), ... din caseta de jos a slide-ului 3 cu marcatori ♥ roșii.</li>
+        <li>Aplicați tranziția Dizolvare (Dissolve) tuturor slide-urilor; avans doar la clic.</li>
+      </ol>
+      <p><a class="btn" href="/download/comp_p1.pptx">Descarcă fișierul aplicația 1</a></p>
+      <p>Încarcă rezolvarea (.pptx) <input type="file" name="ap1_file" accept=".pptx" required></p>
+    </section>
+
+    <section class="card">
+      <h2>Aplicația 2</h2>
+      <div class="req">Cerințe:</div>
+      <ol>
+        <li>Plasați o imagine din grup în spatele casetei de text (slide 2).</li>
+        <li>Setați tipărirea doar pentru slide-urile 1 și 3; salvați captura ca tipar.gif în folderul fișiere de lucru.</li>
+        <li>Creați expunerea exp2131 cu ordinea 2,1,3,1 și setați avansul automat la 15 secunde.</li>
+      </ol>
+      <p><a class="btn" href="/download/comp_p2.pptx">Descarcă fișierul aplicația 2</a></p>
+      <p>Încarcă prezentarea (.pptx) <input type="file" name="ap2_pptx" accept=".pptx" required></p>
+      <p>Încarcă captura (GIF/JPG/PNG - opțional) <input type="file" name="ap2_img" accept="image/*"></p>
+      <p class="hint">Notă: dacă încarci alt format decât GIF, va fi acceptat, dar profesorul va vedea tipul fișierului.</p>
+    </section>
+
+    <p><button class="primary" type="submit">Predă testul</button></p>
+  </form>
+</main>
+</body></html>

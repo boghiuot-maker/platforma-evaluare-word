@@ -1,5 +1,5 @@
-<!doctype html><html><head><meta charset='utf-8'><link rel='stylesheet' href='/static/style.css'><title>Predat</title></head>
-<body><main class='container'><h1>Predare reușită</h1>
-<p>Mulțumim, {{name}}</p>
+
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="/static/style.css"><title>Predare</title></head><body>
+<main class="container"><h1>Predare reușită</h1><p>Mulțumim, {{name}}</p>
 <ul>{% for f in files %}<li><a href='/uploads/{{student_dir}}/{{f}}'>{{f}}</a></li>{% endfor %}</ul>
 <a href='/'>Înapoi</a></main></body></html>
