@@ -57,3 +57,10 @@ def submit():
     results = evaluate_student_package(folder)
     pdf, xlsx = generate_report_files(folder, name, klass, date, results, REPORTS)
     return send_file(str(pdf), as_attachment=True)
+
+    # handle export PDF upload (required)
+    ep = request.files.get('export_pdf')
+    if ep and ep.filename:
+        ep.save(str(folder / secure_filename(ep.filename)))
+    else:
+        (folder / 'export_missing').write_text('MISSING')
